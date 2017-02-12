@@ -11,7 +11,7 @@ import org.junit.Test;
  * This is a JUnit 4 test.  
  * To run these tests, right click on this file (in Navigator pane)
  * and choose Run As -> JUnit test
- * @author  Apichaya Tiwcharoensakul
+ * @author  Resident Evil
  * @version 2017.02.01
  */
 public class PurseTest {
