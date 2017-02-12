@@ -18,8 +18,6 @@ public class Purse {
 	 * when the purse is created and cannot be changed.
 	 */
 	private int capacity;
-	/** Total value of all money in the purse */
-	private double balance;
 
 	/**
 	 * Create a purse with a specified capacity.
@@ -47,6 +45,7 @@ public class Purse {
 	 * @return the total value of items in the purse.
 	 */
 	public double getBalance() {
+		double balance = 0;
 		for (int i = 0; i < money.size(); i++) {
 			balance += money.get(i).getValue();
 		}
@@ -139,7 +138,7 @@ public class Purse {
 	 *         the total value of all money in the purse
 	 */
 	public String toString() {
-		return count() + " coins with value " + balance;
+		return count() + " coins with value " + getBalance();
 	}
 
 }
