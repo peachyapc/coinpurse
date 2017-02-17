@@ -3,7 +3,9 @@ package coinpurse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Iterator;
 
 /**
@@ -24,12 +26,12 @@ public class CoinUtil {
 	 * @return a new List containing only the elements from coinlist that have
 	 *         the requested currency.
 	 */
-	public static List<Coin> filterByCurrency(final List<Coin> coinlist,
+	public static List<Valuable> filterByCurrency(final List<Valuable> coinlist,
 			String currency) {
-		List<Coin> list = new ArrayList<Coin>();
-		for (Coin coin : coinlist) {
-			if (coin.getCurrency().equals(currency)) {
-				list.add(coin);
+		List<Valuable> list = new ArrayList<Valuable>();
+		for (Valuable valuable : coinlist) {
+			if (valuable.getCurrency().equals(currency)) {
+				list.add(valuable);
 			}
 		}
 		return list;
@@ -39,35 +41,30 @@ public class CoinUtil {
 	 * Method to sort a list of coins by currency. On return, the list (coins)
 	 * will be ordered by currency.
 	 * 
-	 * @param coins
+	 * @param valueable
 	 *            is a List of Coin objects we want to sort.
 	 */
-	public static void sortByCurrency(List<Coin> coins) {
-		Collections.sort(coins, new CoinComparator());
+	public static void sortByCurrency(List<Valuable> valueable) {
+		Collections.sort(valueable, new CoinComparator());
+
 	}
 
 	/**
 	 * Sum coins by currency and print the sum for each currency. Print one line
 	 * for the sum of each currency.
 	 * 
-	 * @param coins
+	 * @param valuables
 	 *            is the List of coin object to find sum.
 	 */
-	public static void sumByCurrency(List<Coin> coins) {
-		sortByCurrency(coins);
-		double currentSum = 0;
-		String currentCurrency = coins.get(0).getCurrency();
-		for (Coin coin : coins) {
-			if (coin.getCurrency().equals(currentCurrency)) {
-				currentSum += coin.getValue();
-			} else {
-				System.out.println(currentSum + " " + currentCurrency);
-				currentSum = 0;
-				currentSum = currentSum + coin.getValue();
-				currentCurrency = coin.getCurrency();
-			}
+	public static void sumByCurrency(List<Valuable> valuables) {
+		Map<String, Double> map = new HashMap<>();
+		for (Valuable each : valuables) {
+			double value = map.getOrDefault(each.getCurrency(), 0.0);
+			map.put(each.getCurrency(), value + each.getValue());
 		}
-		System.out.println(currentSum + " " + currentCurrency);
+		for (String currency : map.keySet()) {
+			System.out.println(map.get(currency) + " " + currency);
+		}
 	}
 
 	/**
@@ -79,35 +76,35 @@ public class CoinUtil {
 	public static void main(String[] args) {
 		String currency = "Rupee";
 		System.out.println("Filter coins by currency of " + currency);
-		List<Coin> coins = makeInternationalCoins();
-		int size = coins.size();
+		List<Valuable> valuables = makeInternationalCoins();
+		int size = valuables.size();
 		System.out.print(" INPUT: ");
-		printList(coins, " ");
-		List<Coin> rupees = filterByCurrency(coins, currency);
+		printList(valuables, " ");
+		List<Valuable> rupees = filterByCurrency(valuables, currency);
 		System.out.print("RESULT: ");
 		printList(rupees, " ");
-		if (coins.size() != size)
+		if (valuables.size() != size)
 			System.out.println("Error: you changed the original list.");
 
 		System.out.println("\nSort coins by currency");
-		coins = makeInternationalCoins();
+		valuables = makeInternationalCoins();
 		System.out.print(" INPUT: ");
-		printList(coins, " ");
-		sortByCurrency(coins);
+		printList(valuables, " ");
+		sortByCurrency(valuables);
 		System.out.print("RESULT: ");
-		printList(coins, " ");
+		printList(valuables, " ");
 
 		System.out.println("\nSum coins by currency");
-		coins = makeInternationalCoins();
+		valuables = makeInternationalCoins();
 		System.out.print("coins= ");
-		printList(coins, " ");
-		sumByCurrency(coins);
+		printList(valuables, " ");
+		sumByCurrency(valuables);
 
 	}
 
 	/** Make a list of coins containing different currencies. */
-	public static List<Coin> makeInternationalCoins() {
-		List<Coin> money = new ArrayList<Coin>();
+	public static List<Valuable> makeInternationalCoins() {
+		List<Valuable> money = new ArrayList<Valuable>();
 		money.addAll(makeCoins("Baht", 0.25, 1.0, 2.0, 5.0, 10.0, 10.0));
 		money.addAll(makeCoins("Ringgit", 2.0, 50.0, 1.0, 5.0));
 		money.addAll(makeCoins("Rupee", 0.5, 0.5, 10.0, 1.0));
@@ -117,8 +114,8 @@ public class CoinUtil {
 	}
 
 	/** Make a list of coins using given values. */
-	public static List<Coin> makeCoins(String currency, double... values) {
-		List<Coin> list = new ArrayList<Coin>();
+	public static List<Valuable> makeCoins(String currency, double... values) {
+		List<Valuable> list = new ArrayList<Valuable>();
 		for (double value : values)
 			list.add(new Coin(value, currency));
 		return list;

@@ -7,7 +7,7 @@ import java.util.Comparator;
  * @author Apichaya Tiwcharoensakul
  *
  */
-public class CoinComparator implements Comparator<Coin> {
+public class CoinComparator implements Comparator<Valuable> {
 
 	/**
 	 * Compare the currency between two coin. Return -1 if String of o1 has come
@@ -23,7 +23,7 @@ public class CoinComparator implements Comparator<Coin> {
 	 *          1 if string of o2 has come first.
 	 */
 	@Override
-	public int compare(Coin o1, Coin o2) {
+	public int compare(Valuable o1, Valuable o2) {
 		return o1.getCurrency().compareTo(o2.getCurrency());
 	}
 
