@@ -1,6 +1,5 @@
 package coinpurse;
 
-import java.util.ResourceBundle;
 import java.util.Scanner;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Scanner;
 public class Main {
 
 	/** Capacity of the purse */
-	private static int CAPASITY = 10;
+	private static int CAPASITY = 11;
 
 	/**
 	 * Configure and start the application.
@@ -22,25 +21,12 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		ResourceBundle bundle = ResourceBundle.getBundle("purse");
-		String factoryclass = bundle.getString("moneyfactory");
-		MoneyFactory factory = null;
-		try {
-			factory = (MoneyFactory) Class.forName(factoryclass).newInstance();
-		} catch (ClassCastException cce) {
-			System.out.println(factoryclass + " is not type MoneyFactor");
-		} catch (Exception ex) {
-			System.out
-					.println("Error creating MoneyFactory " + ex.getMessage());
-		}
-		if (factory == null)
-			System.exit(1);
-		else
-			MoneyFactory.setMoneyFactory(factory);
+		MoneyFactory.setMoneyFactory(new MalayMoneyFactory());
 
 		Purse purse = new Purse(CAPASITY);
 		ConsoleDialog ui = new ConsoleDialog(purse);
 		ui.run();
+
 
 	}
 
