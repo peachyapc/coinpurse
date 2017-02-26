@@ -19,17 +19,17 @@ public class CoinUtil {
 	 * Method that examines all the coins in a List and returns only the coins
 	 * that have a currency that matches the parameter value.
 	 * 
-	 * @param coinlist
+	 * @param valuables
 	 *            is a List of Coin objects. This list is not modified.
 	 * @param currency
 	 *            is the currency we want. Must not be null.
 	 * @return a new List containing only the elements from coinlist that have
 	 *         the requested currency.
 	 */
-	public static List<Valuable> filterByCurrency(final List<Valuable> coinlist,
+	public static List<Valuable> filterByCurrency(final List<Valuable> valuables,
 			String currency) {
 		List<Valuable> list = new ArrayList<Valuable>();
-		for (Valuable valuable : coinlist) {
+		for (Valuable valuable : valuables) {
 			if (valuable.getCurrency().equals(currency)) {
 				list.add(valuable);
 			}
@@ -59,8 +59,9 @@ public class CoinUtil {
 	public static void sumByCurrency(List<Valuable> valuables) {
 		Map<String, Double> map = new HashMap<>();
 		for (Valuable each : valuables) {
-			double value = map.getOrDefault(each.getCurrency(), 0.0);
-			map.put(each.getCurrency(), value + each.getValue());
+			String currency = each.getCurrency();
+			double value = map.getOrDefault(currency, 0.0);
+			map.put(currency, value + each.getValue());
 		}
 		for (String currency : map.keySet()) {
 			System.out.println(map.get(currency) + " " + currency);

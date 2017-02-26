@@ -19,6 +19,8 @@ public class Purse {
 	 * when the purse is created and cannot be changed.
 	 */
 	private int capacity;
+	/** Comparator to compare the value of the purse. */
+	private ValueComparator valueComparator = new ValueComparator();
 
 	/**
 	 * Create a purse with a specified capacity.
@@ -47,8 +49,8 @@ public class Purse {
 	 */
 	public double getBalance() {
 		double balance = 0;
-		for (int i = 0; i < money.size(); i++) {
-			balance += money.get(i).getValue();
+		for (Valuable valuable : money) {
+			balance += valuable.getValue();
 		}
 		return balance;
 	}
@@ -85,19 +87,10 @@ public class Purse {
 	 */
 	public boolean insert(Valuable value) {
 		// if the purse is already full then can't insert anything.
-		if (isFull() == true || value.getValue() <= 0) {
+		if (isFull() || value.getValue() <= 0) {
 			return false;
-		} else {
-			money.add(value);
-			Collections.sort(money, new Comparator<Valuable>() {
-
-				@Override
-				public int compare(Valuable o1, Valuable o2) {
-					return o1.getCurrency().compareTo(o2.getCurrency());
-				}			
-			});
-			Collections.reverse(money);
 		}
+		money.add(value);
 		return true;
 	}
 
@@ -112,28 +105,27 @@ public class Purse {
 	 *         withdraw requested amount.
 	 */
 	public Valuable[] withdraw(double amount) {
-		if (amount < 0) {
+		if (amount <= 0) {
 			return null;
 		}
 
 		List<Valuable> keepMoney = new ArrayList<Valuable>();
+		Collections.sort(money, valueComparator);
 
-		if (amount > 0) {
-			for (int i = money.size() - 1; i >= 0; i--) {
-				Valuable value = money.get(i);
-				if (value.getValue() <= amount) {
-					keepMoney.add(value);
-					amount = amount - value.getValue();
-				}
+		for (int i = money.size() - 1; i >= 0; i--) {
+			Valuable value = money.get(i);
+			if (value.getValue() <= amount) {
+				keepMoney.add(value);
+				amount = amount - value.getValue();
+			}
 
-				if (amount == 0) {
-					for (Valuable remove : keepMoney) {
-						this.money.remove(remove);
-					}
-					Valuable[] withdraw = new Valuable[keepMoney.size()];
-					keepMoney.toArray(withdraw);
-					return withdraw;
+			if (amount == 0) {
+				for (Valuable remove : keepMoney) {
+					this.money.remove(remove);
 				}
+				Valuable[] withdraw = new Valuable[keepMoney.size()];
+				keepMoney.toArray(withdraw);
+				return withdraw;
 			}
 		}
 		return null;
@@ -148,23 +140,54 @@ public class Purse {
 	public String toString() {
 		return count() + " coins with value " + getBalance();
 	}
-	
+
 	public static void main(String[] args) {
-		 Purse purse = new Purse(3);
-		  System.out.println(purse.getBalance());
-		  System.out.println(purse.count());
-		  System.out.println(purse.isFull());
-		  System.out.println(purse.insert(new Coin(5)));
-		  System.out.println(purse.insert(new Coin(10)));
-		  System.out.println(purse.insert(new Coin(0)));
-		  System.out.println(purse.insert(new Coin(1)));
-		  System.out.println(purse.insert(new Coin(5)));
-		  System.out.println(purse.count());
-		  System.out.println(purse.isFull());
-		  System.out.println(purse.getBalance());
-		  System.out.println(purse.toString());
-		  System.out.println(purse.withdraw(12));
-		  System.out.println(Arrays.toString(purse.withdraw(11)));
+		Purse purse = new Purse(3);
+		System.out.println(purse.getBalance());
+		System.out.println(purse.count());
+		System.out.println(purse.isFull());
+		System.out.println(purse.insert(new Coin(5)));
+		System.out.println(purse.insert(new Coin(10)));
+		System.out.println(purse.insert(new Coin(0)));
+		System.out.println(purse.insert(new Coin(1)));
+		System.out.println(purse.insert(new Coin(5)));
+		System.out.println(purse.count());
+		System.out.println(purse.isFull());
+		System.out.println(purse.getBalance());
+		System.out.println(purse.toString());
+		System.out.println(purse.withdraw(12));
+		System.out.println(Arrays.toString(purse.withdraw(11)));
+	}
+
+	/**
+	 * Class ValueComparator implement Comparator to override compare method.
+	 * @author Apichaya Tiwcharoensakul
+	 *
+	 */
+	public class ValueComparator implements Comparator<Valuable> {
+		
+		/**
+		 * Compare the valuable between two coin. Return -1 if String of o1 has come
+		 * first, 0 if they have the same string, 1 if string of o2 has come first.
+		 * 
+		 * @param o1
+		 *            is the first coin object to compare. 
+		 *        o2 is the second coin
+		 *            object to compare.
+		 * 
+		 * @return -1 if value of o1 is greater than o2.
+		 * 			0 if they have the same value. 
+		 *          1 if value of o1 is less than o2.
+		 */
+		@Override
+		public int compare(Valuable o1, Valuable o2) {
+			double diff = o1.getValue() - o2.getValue();
+			if (diff > 0)
+				return +1;
+			if (diff < 0)
+				return -1;
+			return 0;
+		}
 	}
 
 }
